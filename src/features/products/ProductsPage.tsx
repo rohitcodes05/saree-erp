@@ -64,7 +64,7 @@ export const ProductsPage: React.FC = () => {
     {
       header: 'Price (₹)',
       key: 'selling_price',
-      render: (val) => <span className="font-medium">₹{val}</span>,
+      render: (val) => <span className="font-medium">₹{String(val)}</span>,
     },
     {
       header: 'GST',
@@ -75,7 +75,7 @@ export const ProductsPage: React.FC = () => {
       header: 'Status',
       key: 'is_active',
       render: (val) => (
-        <Badge variant={val ? 'success' : 'neutral'}>
+        <Badge variant={val ? 'success' : 'secondary'}>
           {val ? 'Active' : 'Inactive'}
         </Badge>
       ),
@@ -147,9 +147,10 @@ export const ProductsPage: React.FC = () => {
           ) : filteredProducts.length > 0 ? (
             <Table
               data={filteredProducts}
-              columns={columns}
+              columns={columns as any}
+              rowKey="id"
               onRowClick={isCashier ? undefined : handleEdit}
-              className="w-full whitespace-nowrap"
+              className="w-full whitespace-nowrap cursor-pointer"
             />
           ) : (
             <EmptyState

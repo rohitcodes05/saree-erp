@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Filter, AlertTriangle, Layers, Plus } from 'lucide-react';
 import { 
-  Button, Input, Card, Table, Badge, EmptyState, Select 
+  Button, Input, Card, Table, Badge, EmptyState, Select, Spinner
 } from '@/components/ui';
 import type { TableColumn } from '@/components/ui';
 import { useInventory } from './hooks';
@@ -9,8 +9,10 @@ import { useShops } from '@/hooks/useShops';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { StockAdjustForm } from './components/StockAdjustForm';
 import type { InventoryStatusView } from '@/types/database.types';
+import { useNavigate } from 'react-router-dom';
 
 export const InventoryPage: React.FC = () => {
+  const navigate = useNavigate();
   const { role, assignedShops, isCashier } = useAuth();
   const { data: shops = [] } = useShops();
   
@@ -50,12 +52,12 @@ export const InventoryPage: React.FC = () => {
     {
       header: 'Category',
       key: 'category_name',
-      render: (val) => val || '—',
+      render: (val) => String(val || '—'),
     },
     {
       header: 'Shop',
       key: 'shop_name',
-      render: (val) => <span className="text-sm">{val}</span>,
+      render: (val) => <span className="text-sm">{String(val)}</span>,
     },
     {
       header: 'Stock Status',
@@ -75,7 +77,7 @@ export const InventoryPage: React.FC = () => {
       key: 'quantity',
       render: (val, row) => (
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-lg">{val}</span>
+          <span className="font-semibold text-lg">{String(val)}</span>
           {row.quantity <= row.minimum_stock && (
             <AlertTriangle className="h-4 w-4 text-warning" />
           )}
@@ -133,7 +135,7 @@ export const InventoryPage: React.FC = () => {
               <Select
                 options={shopOptions}
                 value={selectedShopId}
-                onChange={(e) => setSelectedShopId(e.target.value)}
+                onChange={(val) => setSelectedShopId(val ?? '')}
                 placeholder="Filter by Shop"
               />
             </div>
@@ -148,22 +150,22 @@ export const InventoryPage: React.FC = () => {
         {/* Table Content */}
         <div className="flex-1 overflow-x-auto">
           {isLoading ? (
-            <div className="flex justify-center py-12">
-              <span className="text-text-muted">Loading inventory...</span>
+            <div className="flex justify-center p-12">
+              <Spinner size="lg" />
             </div>
-          ) : filteredInventory.length > 0 ? (
-            <Table
-              data={filteredInventory}
-              columns={columns}
-              onRowClick={handleAdjust}
-              className="w-full whitespace-nowrap"
+          ) : filteredInventory?.length === 0 ? (
+            <EmptyState 
+              icon={<Layers className="h-8 w-8" />}
+              title="No inventory records found"
+              description="Adjust filters or add products to see stock levels."
             />
           ) : (
-            <EmptyState
-              icon={<Layers className="h-8 w-8" />}
-              title="No inventory records"
-              description={searchTerm ? `No results for "${searchTerm}"` : 'Your inventory list is empty.'}
-              className="h-[400px]"
+            <Table 
+              data={filteredInventory || []} 
+              columns={columns as any} 
+              onRowClick={(item) => navigate(`/products/${item.product_id}`)}
+              className="cursor-pointer"
+              rowKey="id"
             />
           )}
         </div>

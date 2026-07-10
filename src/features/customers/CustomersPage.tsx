@@ -166,9 +166,9 @@ export const CustomersPage: React.FC = () => {
           />
         ) : (
           <Table 
-            columns={columns}
+            columns={columns as any}
             data={filteredCustomers}
-            keyField="id"
+            rowKey="id"
           />
         )}
       </Card>

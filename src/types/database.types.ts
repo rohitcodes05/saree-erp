@@ -631,40 +631,40 @@ export interface DailySalesSummaryView {
 export interface Database {
   public: {
     Tables: {
-      companies:              { Row: Company;              Insert: Partial<Company>;              Update: Partial<Company> };
-      profiles:               { Row: Profile;               Insert: Partial<Profile>;               Update: Partial<Profile> };
-      shops:                  { Row: Shop;                  Insert: Partial<Shop>;                  Update: Partial<Shop> };
-      shop_staff:             { Row: ShopStaff;             Insert: Partial<ShopStaff>;             Update: Partial<ShopStaff> };
-      shop_settings:          { Row: ShopSettings;          Insert: Partial<ShopSettings>;          Update: Partial<ShopSettings> };
-      categories:             { Row: Category;              Insert: Partial<Category>;              Update: Partial<Category> };
-      brands:                 { Row: Brand;                 Insert: Partial<Brand>;                 Update: Partial<Brand> };
-      suppliers:              { Row: Supplier;              Insert: Partial<Supplier>;              Update: Partial<Supplier> };
-      products:               { Row: Product;               Insert: Partial<Product>;               Update: Partial<Product> };
-      product_images:         { Row: ProductImage;          Insert: Partial<ProductImage>;          Update: Partial<ProductImage> };
-      inventory:              { Row: Inventory;             Insert: Partial<Inventory>;             Update: Partial<Inventory> };
-      inventory_transactions: { Row: InventoryTransaction;  Insert: Partial<InventoryTransaction>;  Update: Partial<InventoryTransaction> };
-      stock_alerts:           { Row: StockAlert;            Insert: Partial<StockAlert>;            Update: Partial<StockAlert> };
-      customers:              { Row: Customer;              Insert: Partial<Customer>;              Update: Partial<Customer> };
-      loyalty_transactions:   { Row: LoyaltyTransaction;   Insert: Partial<LoyaltyTransaction>;   Update: Partial<LoyaltyTransaction> };
-      coupons:                { Row: Coupon;                Insert: Partial<Coupon>;                Update: Partial<Coupon> };
-      sales:                  { Row: Sale;                  Insert: Partial<Sale>;                  Update: Partial<Sale> };
-      sale_items:             { Row: SaleItem;              Insert: Partial<SaleItem>;              Update: Partial<SaleItem> };
-      payments:               { Row: Payment;               Insert: Partial<Payment>;               Update: Partial<Payment> };
-      returns:                { Row: Return;                Insert: Partial<Return>;                Update: Partial<Return> };
-      return_items:           { Row: ReturnItem;            Insert: Partial<ReturnItem>;            Update: Partial<ReturnItem> };
-      purchase_orders:        { Row: PurchaseOrder;         Insert: Partial<PurchaseOrder>;         Update: Partial<PurchaseOrder> };
-      purchase_order_items:   { Row: PurchaseOrderItem;     Insert: Partial<PurchaseOrderItem>;     Update: Partial<PurchaseOrderItem> };
-      supplier_payments:      { Row: SupplierPayment;       Insert: Partial<SupplierPayment>;       Update: Partial<SupplierPayment> };
-      employees:              { Row: Employee;              Insert: Partial<Employee>;              Update: Partial<Employee> };
-      attendance:             { Row: Attendance;            Insert: Partial<Attendance>;            Update: Partial<Attendance> };
-      salary_records:         { Row: SalaryRecord;          Insert: Partial<SalaryRecord>;          Update: Partial<SalaryRecord> };
-      expenses:               { Row: Expense;               Insert: Partial<Expense>;               Update: Partial<Expense> };
-      audit_logs:             { Row: AuditLog;              Insert: Partial<AuditLog>;              Update: Partial<AuditLog> };
-      notifications:          { Row: Notification;          Insert: Partial<Notification>;          Update: Partial<Notification> };
+      companies:              { Row: Company; Insert: Partial<Company>; Update: Partial<Company>; Relationships: any[] };
+      profiles:               { Row: Profile; Insert: Partial<Profile>; Update: Partial<Profile>; Relationships: any[] };
+      shops:                  { Row: Shop; Insert: Partial<Shop>; Update: Partial<Shop>; Relationships: any[] };
+      shop_staff:             { Row: ShopStaff; Insert: Partial<ShopStaff>; Update: Partial<ShopStaff>; Relationships: any[] };
+      shop_settings:          { Row: ShopSettings; Insert: Partial<ShopSettings>; Update: Partial<ShopSettings>; Relationships: any[] };
+      categories:             { Row: Category; Insert: Partial<Category>; Update: Partial<Category>; Relationships: any[] };
+      brands:                 { Row: Brand; Insert: Partial<Brand>; Update: Partial<Brand>; Relationships: any[] };
+      suppliers:              { Row: Supplier; Insert: Partial<Supplier>; Update: Partial<Supplier>; Relationships: any[] };
+      products:               { Row: Product; Insert: Partial<Product>; Update: Partial<Product>; Relationships: any[] };
+      product_images:         { Row: ProductImage; Insert: Partial<ProductImage>; Update: Partial<ProductImage>; Relationships: any[] };
+      inventory:              { Row: Inventory; Insert: Partial<Inventory>; Update: Partial<Inventory>; Relationships: any[] };
+      inventory_transactions: { Row: InventoryTransaction; Insert: Partial<InventoryTransaction>; Update: Partial<InventoryTransaction>; Relationships: any[] };
+      stock_alerts:           { Row: StockAlert; Insert: Partial<StockAlert>; Update: Partial<StockAlert>; Relationships: any[] };
+      customers:              { Row: Customer; Insert: Partial<Customer>; Update: Partial<Customer>; Relationships: any[] };
+      loyalty_transactions:   { Row: LoyaltyTransaction; Insert: Partial<LoyaltyTransaction>; Update: Partial<LoyaltyTransaction>; Relationships: any[] };
+      coupons:                { Row: Coupon; Insert: Partial<Coupon>; Update: Partial<Coupon>; Relationships: any[] };
+      sales:                  { Row: Sale; Insert: Partial<Sale>; Update: Partial<Sale>; Relationships: any[] };
+      sale_items:             { Row: SaleItem; Insert: Partial<SaleItem>; Update: Partial<SaleItem>; Relationships: any[] };
+      payments:               { Row: Payment; Insert: Partial<Payment>; Update: Partial<Payment>; Relationships: any[] };
+      returns:                { Row: Return; Insert: Partial<Return>; Update: Partial<Return>; Relationships: any[] };
+      return_items:           { Row: ReturnItem; Insert: Partial<ReturnItem>; Update: Partial<ReturnItem>; Relationships: any[] };
+      purchase_orders:        { Row: PurchaseOrder; Insert: Partial<PurchaseOrder>; Update: Partial<PurchaseOrder>; Relationships: any[] };
+      purchase_order_items:   { Row: PurchaseOrderItem; Insert: Partial<PurchaseOrderItem>; Update: Partial<PurchaseOrderItem>; Relationships: any[] };
+      supplier_payments:      { Row: SupplierPayment; Insert: Partial<SupplierPayment>; Update: Partial<SupplierPayment>; Relationships: any[] };
+      employees:              { Row: Employee; Insert: Partial<Employee>; Update: Partial<Employee>; Relationships: any[] };
+      attendance:             { Row: Attendance; Insert: Partial<Attendance>; Update: Partial<Attendance>; Relationships: any[] };
+      salary_records:         { Row: SalaryRecord; Insert: Partial<SalaryRecord>; Update: Partial<SalaryRecord>; Relationships: any[] };
+      expenses:               { Row: Expense; Insert: Partial<Expense>; Update: Partial<Expense>; Relationships: any[] };
+      audit_logs:             { Row: AuditLog; Insert: Partial<AuditLog>; Update: Partial<AuditLog>; Relationships: any[] };
+      notifications:          { Row: Notification; Insert: Partial<Notification>; Update: Partial<Notification>; Relationships: any[] };
     };
     Views: {
-      v_inventory_status:     { Row: InventoryStatusView };
-      v_daily_sales_summary:  { Row: DailySalesSummaryView };
+      v_inventory_status:     { Row: InventoryStatusView; Relationships: any[] };
+      v_daily_sales_summary:  { Row: DailySalesSummaryView; Relationships: any[] };
     };
     Functions: {
       generate_invoice_number: { Args: { p_shop_id: string }; Returns: string };
@@ -673,6 +673,12 @@ export interface Database {
       search_customers:        { Args: { p_query: string; p_limit?: number }; Returns: unknown[] };
       update_last_login:       { Args: Record<string, never>; Returns: void };
       log_audit_event:         { Args: { p_action: string; p_resource_type: string; p_resource_id?: string; p_old_values?: unknown; p_new_values?: unknown; p_shop_id?: string }; Returns: void };
+    };
+    Enums: {
+      [_ in never]: never
+    };
+    CompositeTypes: {
+      [_ in never]: never
     };
   };
 }

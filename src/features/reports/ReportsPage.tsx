@@ -3,7 +3,7 @@ import {
   TrendingUp, IndianRupee, ShoppingCart, Package, AlertTriangle, 
   ArrowUpRight, Tag, Receipt
 } from 'lucide-react';
-import { Card, MetricCard, Spinner, Badge } from '@/components/ui';
+import { Card, MetricCard, Spinner, Badge, Button } from '@/components/ui';
 import { useSalesReports, useInventoryReports } from './hooks';
 
 export const ReportsPage: React.FC = () => {
@@ -68,25 +68,27 @@ export const ReportsPage: React.FC = () => {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
-          title="Total Revenue"
+          label="Total Revenue"
           value={`₹${(salesData?.totalRevenue || 0).toLocaleString('en-IN')}`}
           icon={<IndianRupee className="h-5 w-5 text-primary" />}
-          trend={{ value: 12.5, label: "vs last period", isPositive: true }}
+          change={12.5}
+          changeLabel="vs last period"
           className="bg-primary/5 border-primary/20"
         />
         <MetricCard
-          title="Sales Count"
+          label="Sales Count"
           value={(salesData?.salesCount || 0).toString()}
           icon={<ShoppingCart className="h-5 w-5 text-secondary" />}
-          trend={{ value: 5.2, label: "vs last period", isPositive: true }}
+          change={5.2}
+          changeLabel="vs last period"
         />
         <MetricCard
-          title="Tax Collected (GST)"
+          label="Tax Collected (GST)"
           value={`₹${(salesData?.totalTax || 0).toLocaleString('en-IN')}`}
           icon={<Receipt className="h-5 w-5 text-warning" />}
         />
         <MetricCard
-          title="Total Inventory Value"
+          label="Total Inventory Value"
           value={`₹${(inventoryData?.totalValue || 0).toLocaleString('en-IN')}`}
           icon={<Package className="h-5 w-5 text-success" />}
         />

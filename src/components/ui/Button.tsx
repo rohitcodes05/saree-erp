@@ -9,6 +9,7 @@ export interface ButtonProps
   variant?: Variant;
   size?: Size;
   loading?: boolean;
+  isLoading?: boolean; // alias for loading
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   fullWidth?: boolean;
@@ -65,6 +66,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       variant = 'default',
       size = 'md',
       loading = false,
+      isLoading = false,
       leftIcon,
       rightIcon,
       fullWidth = false,
@@ -75,13 +77,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const isDisabled = disabled || loading;
+    // Support legacy isLoading prop
+    const isActuallyLoading = loading || isLoading;
+    const isDisabled = disabled || isActuallyLoading;
 
     return (
       <button
         ref={ref}
         disabled={isDisabled}
-        aria-busy={loading}
+        aria-busy={isActuallyLoading}
         className={cn(
           // Base
           'inline-flex items-center justify-center font-medium',

@@ -54,7 +54,7 @@ const SortIcon: React.FC<{ direction: SortDirection }> = ({ direction }) => {
 
 // ─── Table Component ──────────────────────────────────────────────────────────
 
-export function Table<T extends Record<string, unknown>>({
+export function Table<T>({
   columns,
   data,
   rowKey,

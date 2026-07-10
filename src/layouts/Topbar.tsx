@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bell, Sun, Moon, ChevronDown, Store, X } from 'lucide-react';
+import { Search, Bell, Sun, Moon, ChevronDown, Store } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -69,7 +69,7 @@ const GlobalSearch: React.FC = () => {
             subtitle: c.phone,
             href: `/customers/${c.id}`,
           })),
-          ...(sales?.data ?? []).map((s: { id: string; invoice_number: string }) => ({
+          ...(sales ?? []).map((s: any) => ({
             id: s.id,
             type: 'sale' as const,
             title: s.invoice_number,

@@ -31,7 +31,7 @@ export const ExpensesPage: React.FC = () => {
     {
       header: 'Date',
       key: 'expense_date',
-      render: (val) => new Date(val).toLocaleDateString('en-IN')
+      render: (val) => new Date(val as string).toLocaleDateString('en-IN')
     },
     {
       header: 'Category',
@@ -45,7 +45,7 @@ export const ExpensesPage: React.FC = () => {
     {
       header: 'Description',
       key: 'description',
-      render: (val) => <span className="text-sm">{val || '-'}</span>
+      render: (val) => <span className="text-sm">{String(val || '-')}</span>
     },
     {
       header: 'Amount',
@@ -152,6 +152,7 @@ export const ExpensesPage: React.FC = () => {
             data={expenses}
             columns={columns}
             isLoading={isLoading}
+            rowKey="id"
           />
         )}
       </Card>

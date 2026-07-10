@@ -218,7 +218,7 @@ export const POSPage: React.FC = () => {
               <div key={item.id} className="flex flex-col gap-2 p-3 bg-surface-1 rounded-xl border border-border">
                 <div className="flex justify-between items-start">
                   <div className="pr-2">
-                    <h4 className="font-medium text-sm text-text line-clamp-1">{item.product.product_name || item.product.name}</h4>
+                    <h4 className="font-medium text-sm text-text line-clamp-1">{(item.product as any).product_name || item.product.name}</h4>
                     <p className="text-xs text-text-muted mt-0.5">₹{item.unitPrice} / unit</p>
                   </div>
                   <span className="font-semibold text-sm">

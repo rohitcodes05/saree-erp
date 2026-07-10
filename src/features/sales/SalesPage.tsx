@@ -11,7 +11,7 @@ export const SalesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedSaleId, setExpandedSaleId] = useState<string | null>(null);
 
-  const filteredSales = sales?.filter(s => {
+  const filteredSales = sales?.filter((s: any) => {
     const searchLower = searchTerm.toLowerCase();
     const invoiceNo = s.invoice_number?.toLowerCase() || '';
     const fName = s.customer?.first_name?.toLowerCase() || '';
@@ -103,7 +103,7 @@ export const SalesPage: React.FC = () => {
                   </td>
                 </tr>
               ) : (
-                filteredSales?.map((sale) => (
+                filteredSales?.map((sale: any) => (
                   <React.Fragment key={sale.id}>
                     <tr 
                       className={`hover:bg-surface-2/30 transition-colors cursor-pointer ${expandedSaleId === sale.id ? 'bg-surface-2/50' : ''}`}

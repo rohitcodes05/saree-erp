@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase';
-import { formatDate } from '@/lib/utils';
-import { subDays, subMonths, startOfDay, startOfMonth, startOfWeek, endOfDay, format } from 'date-fns';
+// import { formatDate } from '@/lib/utils';
+import { subDays, startOfDay, startOfMonth, startOfWeek, endOfDay, format } from 'date-fns';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -80,50 +80,49 @@ export async function getDashboardMetrics(
   const weekStart = isoDate(startOfWeek(now, { weekStartsOn: 1 }));
   const monthStart = isoDate(startOfMonth(now));
 
-  let shopFilter: Record<string, unknown> = { company_id: companyId };
-  if (shopId) shopFilter = { shop_id: shopId };
+  // Removed shopFilter since we build queries dynamically
 
-  // Fetch sales in parallel
+  // Today sales
+  let todayQ = supabase.from('sales').select('total_amount, gst_amount')
+    .eq('status', 'completed')
+    .gte('sale_date', todayStart).lte('sale_date', todayEnd);
+  if (shopId) todayQ = todayQ.eq('shop_id', shopId);
+
+  // Yesterday sales
+  let yesterdayQ = supabase.from('sales').select('total_amount')
+    .eq('status', 'completed')
+    .gte('sale_date', yesterdayStart).lte('sale_date', yesterdayEnd);
+  if (shopId) yesterdayQ = yesterdayQ.eq('shop_id', shopId);
+
+  // Week sales
+  let weekQ = supabase.from('sales').select('total_amount')
+    .eq('status', 'completed')
+    .gte('sale_date', weekStart);
+  if (shopId) weekQ = weekQ.eq('shop_id', shopId);
+
+  // Month sales
+  let monthQ = supabase.from('sales').select('total_amount')
+    .eq('status', 'completed')
+    .gte('sale_date', monthStart);
+  if (shopId) monthQ = monthQ.eq('shop_id', shopId);
+
+  // Total customers
+  const customersQ = supabase.from('customers').select('id', { count: 'exact', head: true })
+    .eq('company_id', companyId);
+
+  // Low stock count
+  let lowStockQ = supabase.from('stock_alerts').select('id', { count: 'exact', head: true })
+    .eq('is_resolved', false);
+  if (shopId) lowStockQ = lowStockQ.eq('shop_id', shopId);
+
+  // Pending payments
+  let pendingQ = supabase.from('sales').select('amount_due')
+    .eq('payment_status', 'pending');
+  if (shopId) pendingQ = pendingQ.eq('shop_id', shopId);
+
   const [todayRes, yesterdayRes, weekRes, monthRes, customersRes, lowStockRes, pendingRes] =
     await Promise.all([
-      // Today sales
-      supabase.from('sales').select('total_amount, gst_amount')
-        .eq('status', 'completed')
-        .gte('sale_date', todayStart).lte('sale_date', todayEnd)
-        .match(shopId ? { shop_id: shopId } : {})
-        .then(r => r),
-      // Yesterday sales
-      supabase.from('sales').select('total_amount')
-        .eq('status', 'completed')
-        .gte('sale_date', yesterdayStart).lte('sale_date', yesterdayEnd)
-        .match(shopId ? { shop_id: shopId } : {})
-        .then(r => r),
-      // Week sales
-      supabase.from('sales').select('total_amount')
-        .eq('status', 'completed')
-        .gte('sale_date', weekStart)
-        .match(shopId ? { shop_id: shopId } : {})
-        .then(r => r),
-      // Month sales
-      supabase.from('sales').select('total_amount')
-        .eq('status', 'completed')
-        .gte('sale_date', monthStart)
-        .match(shopId ? { shop_id: shopId } : {})
-        .then(r => r),
-      // Total customers
-      supabase.from('customers').select('id', { count: 'exact', head: true })
-        .eq('company_id', companyId)
-        .then(r => r),
-      // Low stock count
-      supabase.from('stock_alerts').select('id', { count: 'exact', head: true })
-        .eq('is_resolved', false)
-        .match(shopId ? { shop_id: shopId } : {})
-        .then(r => r),
-      // Pending payments
-      supabase.from('sales').select('amount_due')
-        .eq('payment_status', 'pending')
-        .match(shopId ? { shop_id: shopId } : {})
-        .then(r => r),
+      todayQ, yesterdayQ, weekQ, monthQ, customersQ, lowStockQ, pendingQ
     ]);
 
   const todaySales = todayRes.data ?? [];
@@ -163,19 +162,21 @@ export async function getDashboardMetrics(
 // ─── Revenue Chart Data ───────────────────────────────────────────────────────
 
 export async function getRevenueTrend(
-  companyId: string,
+  _companyId: string,
   days = 30,
   shopId?: string
 ): Promise<{ data: RevenueDataPoint[]; error: string | null }> {
   const from = isoDate(subDays(startOfDay(new Date()), days - 1));
 
-  const { data, error } = await supabase
+  let q = supabase
     .from('sales')
     .select('sale_date, total_amount, gst_amount')
     .eq('status', 'completed')
-    .gte('sale_date', from)
-    .match(shopId ? { shop_id: shopId } : {})
-    .order('sale_date');
+    .gte('sale_date', from);
+  if (shopId) q = q.eq('shop_id', shopId);
+  q = q.order('sale_date');
+
+  const { data, error } = await q;
 
   if (error) return { data: [], error: error.message };
 
@@ -253,13 +254,13 @@ export async function getShopPerformance(
 // ─── Top Products ─────────────────────────────────────────────────────────────
 
 export async function getTopProducts(
-  companyId: string,
+  _companyId: string,
   limit = 10,
   shopId?: string
 ): Promise<{ data: TopProduct[]; error: string | null }> {
   const from = isoDate(startOfMonth(new Date()));
 
-  const { data, error } = await supabase
+  let q = supabase
     .from('sale_items')
     .select(`
       product_id, product_name, product_sku,
@@ -267,8 +268,10 @@ export async function getTopProducts(
       sale:sales!inner(shop_id, status, sale_date)
     `)
     .eq('sale.status', 'completed')
-    .gte('sale.sale_date', from)
-    .match(shopId ? { 'sale.shop_id': shopId } : {});
+    .gte('sale.sale_date', from);
+  if (shopId) q = q.eq('sale.shop_id', shopId);
+
+  const { data, error } = await q;
 
   if (error) return { data: [], error: error.message };
 
@@ -357,17 +360,19 @@ export async function getRecentActivity(
 // ─── GST Summary (this month) ─────────────────────────────────────────────────
 
 export async function getGstSummary(
-  companyId: string,
+  _companyId: string,
   shopId?: string
 ): Promise<{ data: GstSummary | null; error: string | null }> {
   const from = isoDate(startOfMonth(new Date()));
 
-  const { data, error } = await supabase
+  let q = supabase
     .from('sales')
     .select('total_amount, taxable_amount, gst_amount, cgst_amount, sgst_amount')
     .eq('status', 'completed')
-    .gte('sale_date', from)
-    .match(shopId ? { shop_id: shopId } : {});
+    .gte('sale_date', from);
+  if (shopId) q = q.eq('shop_id', shopId);
+
+  const { data, error } = await q;
 
   if (error) return { data: null, error: error.message };
 

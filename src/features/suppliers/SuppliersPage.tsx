@@ -57,11 +57,11 @@ export const SuppliersPage: React.FC = () => {
     }
   };
 
-  const columns: TableColumn<Supplier>[] = [
+  const columns: TableColumn<any>[] = [
     {
       header: 'Company Name',
       key: 'name',
-      render: (val: any, row) => (
+      render: (_val: any, row) => (
         <div>
           <div className="font-semibold text-text">{row.name}</div>
           {row.contact_person && <div className="text-xs text-text-muted">Attn: {row.contact_person}</div>}
@@ -90,7 +90,7 @@ export const SuppliersPage: React.FC = () => {
     {
       header: 'Tax Info',
       key: 'gst_number',
-      render: (val: any, row) => (
+      render: (val: any, _row) => (
         <div className="space-y-1">
           {val ? <Badge variant="secondary" className="text-[10px]">GST: {val}</Badge> : <span className="text-xs text-text-muted">No GST</span>}
         </div>
@@ -162,8 +162,8 @@ export const SuppliersPage: React.FC = () => {
         ) : (
           <Table 
             columns={columns}
-            data={filteredSuppliers}
-            keyField="id"
+            data={filteredSuppliers as any}
+            rowKey="id"
           />
         )}
       </Card>

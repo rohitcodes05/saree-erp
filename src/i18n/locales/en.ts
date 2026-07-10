@@ -311,7 +311,7 @@ const en = {
     sessionExpired: 'Your session expired. Please log in again.',
     formValidation: 'Please fix the errors in the form.',
   },
-} as const;
+};
 
 export type TranslationKeys = typeof en;
 export default en;

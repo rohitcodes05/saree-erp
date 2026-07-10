@@ -32,7 +32,7 @@ export const ReturnForm: React.FC<ReturnFormProps> = ({ isOpen, onClose }) => {
   // State for tracking which items are being returned
   const [returnItems, setReturnItems] = useState<Record<string, number>>({});
 
-  const { register, control, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<ReturnFormValues>({
+  const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<ReturnFormValues>({
     resolver: zodResolver(returnSchema),
     defaultValues: {
       invoice_number: '',
@@ -281,10 +281,10 @@ export const ReturnForm: React.FC<ReturnFormProps> = ({ isOpen, onClose }) => {
             </Button>
             <Button 
               type="submit" 
-              isLoading={isSubmitting} 
+              loading={isSubmitting} 
               disabled={!sale || sale.status === 'returned' || totalRefund === 0}
-              icon={<RotateCcw className="h-4 w-4" />}
             >
+              <RotateCcw className="h-4 w-4 mr-2 inline-block" />
               Process Return
             </Button>
           </div>

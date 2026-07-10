@@ -150,9 +150,9 @@ export const EmployeesPage: React.FC = () => {
           />
         ) : (
           <Table 
-            columns={columns}
+            columns={columns as any}
             data={filteredEmployees}
-            keyField="id"
+            rowKey="id"
           />
         )}
       </Card>

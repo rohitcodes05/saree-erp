@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Input, Table, Badge, Spinner, Select } from '@/components/ui';
-import { Shield, UserPlus, Trash2 } from 'lucide-react';
+import { Shield, UserPlus, Trash2, ShieldAlert } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useShops } from '@/hooks/useShops';
@@ -127,7 +127,7 @@ export const UserAccessTab: React.FC = () => {
           variant="ghost" 
           size="sm" 
           className="text-danger hover:text-danger hover:bg-danger/10" 
-          onClick={() => handleRemoveAccess(val, row.role)}
+          onClick={() => handleRemoveAccess(val as string, row.role)}
           disabled={row.role === 'super_admin'}
         >
           Revoke
@@ -138,77 +138,76 @@ export const UserAccessTab: React.FC = () => {
 
   if (!isSuperAdmin) {
     return (
-      <Card className="p-6 text-center">
-        <Shield className="h-12 w-12 text-danger/50 mx-auto mb-4" />
-        <h2 className="text-lg font-bold text-text">Access Denied</h2>
-        <p className="text-sm text-text-muted mt-2">You do not have permission to manage user access.</p>
-      </Card>
+      <div className="p-8 text-center bg-surface-2 rounded-xl">
+        <ShieldAlert className="h-12 w-12 text-warning mx-auto mb-3" />
+        <h3 className="text-lg font-semibold text-text">Restricted Access</h3>
+        <p className="text-text-muted mt-1">Only the Company Admin can assign roles and manage access.</p>
+      </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <h2 className="text-lg font-bold text-text mb-2 flex items-center gap-2">
-          <UserPlus className="h-5 w-5 text-primary" /> Assign New Staff Role
-        </h2>
-        <p className="text-sm text-text-muted mb-4">
-          Enter the email address of the staff member who just signed up. This will grant them access to your shop.
-        </p>
-        
-        <form onSubmit={handleAssignRole} className="flex flex-col sm:flex-row gap-4 items-end">
-          <div className="flex-1 w-full">
-            <Input 
-              label="Staff Email Address" 
-              type="email" 
-              placeholder="staff@example.com" 
-              value={assignEmail}
-              onChange={(e) => setAssignEmail(e.target.value)}
-              required
-            />
+    <div className="space-y-8 animate-fade-in">
+      <div className="flex justify-between items-end">
+        <div>
+          <h2 className="text-xl font-bold text-text">User Roles & Access</h2>
+          <p className="text-text-muted mt-1">Assign system roles to emails in your company.</p>
+        </div>
+      </div>
+
+      {/* Assignment Form */}
+      <Card>
+        <form onSubmit={handleAssignRole} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div className="space-y-2 md:col-span-2">
+              <label className="text-sm font-medium text-text">User Email</label>
+              <Input 
+                type="email" 
+                placeholder="user@example.com" 
+                value={assignEmail}
+                onChange={e => setAssignEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-text">Role</label>
+              <Select 
+                value={assignRole}
+                onChange={val => setAssignRole(val ?? 'staff')}
+                options={[
+                  { label: 'Admin (All Access)', value: 'admin' },
+                  { label: 'Manager (Shop Access)', value: 'manager' },
+                  { label: 'Staff (POS Only)', value: 'staff' },
+                ]}
+              />
+            </div>
+            <Button type="submit" loading={isAssigning} className="w-full">
+              Assign Role
+            </Button>
           </div>
-          <div className="w-full sm:w-48">
-            <Select 
-              label="Select Shop"
-              value={assignShop}
-              onChange={(val) => setAssignShop(val ?? '')}
-              options={[
-                { value: '', label: 'Select a shop...' },
-                ...shops.map(s => ({ value: s.id, label: s.name }))
-              ]}
-              required
-            />
-          </div>
-          <div className="w-full sm:w-48">
-            <Select 
-              label="Select Role"
-              value={assignRole}
-              onChange={(val) => setAssignRole(val ?? 'staff')}
-              options={[
-                { value: 'staff', label: 'Staff' },
-                { value: 'cashier', label: 'Cashier (Billing Only)' },
-                { value: 'shop_manager', label: 'Shop Manager' }
-              ]}
-            />
-          </div>
-          <Button type="submit" isLoading={isAssigning} className="w-full sm:w-auto h-10">
-            Grant Access
-          </Button>
+          {assignRole !== 'admin' && (
+            <div className="text-sm text-warning mt-2 bg-warning/10 p-2 rounded-md">
+              Note: Non-admin users must also be assigned to a specific shop to log in.
+            </div>
+          )}
         </form>
       </Card>
 
-      <Card className="p-6">
-        <h2 className="text-lg font-bold text-text mb-6">Staff with Access</h2>
-        
-        {isLoading ? (
-          <div className="flex justify-center py-8"><Spinner /></div>
-        ) : (
-          <Table 
-            data={profiles}
-            columns={columns}
-          />
-        )}
-      </Card>
+      {/* Users List */}
+      <div>
+        <h3 className="text-lg font-semibold text-text mb-4">Current Users</h3>
+        <Card className="p-0 overflow-hidden">
+          {isLoading ? (
+            <div className="p-8 flex justify-center"><Spinner /></div>
+          ) : (
+            <Table 
+              data={profiles} 
+              columns={columns} 
+              rowKey="id"
+            />
+          )}
+        </Card>
+      </div>
     </div>
   );
 };
