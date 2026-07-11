@@ -43,7 +43,7 @@ export const UserAccessTab: React.FC = () => {
   const handleAssignRole = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!assignEmail.trim()) return;
-    if (!assignShop) {
+    if (assignRole !== 'admin' && !assignShop) {
       toast.error('Please select a shop to assign the user to.');
       return;
     }
@@ -57,7 +57,7 @@ export const UserAccessTab: React.FC = () => {
         p_email: assignEmail.trim().toLowerCase(),
         p_role: assignRole,
         p_company_id: companyId,
-        p_shop_id: assignShop
+        p_shop_id: assignRole === 'admin' ? null : (assignShop || null)
       });
 
       if (error) {
@@ -158,8 +158,8 @@ export const UserAccessTab: React.FC = () => {
       {/* Assignment Form */}
       <Card>
         <form onSubmit={handleAssignRole} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-            <div className="space-y-2 md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+            <div className="space-y-2 md:col-span-4">
               <label className="text-sm font-medium text-text">User Email</label>
               <Input 
                 type="email" 
@@ -169,11 +169,14 @@ export const UserAccessTab: React.FC = () => {
                 required
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-3">
               <label className="text-sm font-medium text-text">Role</label>
               <Select 
                 value={assignRole}
-                onChange={val => setAssignRole(val ?? 'staff')}
+                onChange={val => {
+                  setAssignRole(val ?? 'staff');
+                  if (val === 'admin') setAssignShop('');
+                }}
                 options={[
                   { label: 'Admin (All Access)', value: 'admin' },
                   { label: 'Manager (Shop Access)', value: 'manager' },
@@ -181,9 +184,23 @@ export const UserAccessTab: React.FC = () => {
                 ]}
               />
             </div>
-            <Button type="submit" loading={isAssigning} className="w-full">
-              Assign Role
-            </Button>
+            <div className="space-y-2 md:col-span-3">
+              <label className="text-sm font-medium text-text">Shop</label>
+              <Select 
+                value={assignShop}
+                onChange={val => setAssignShop(val ?? '')}
+                options={[
+                  { label: 'Select a shop...', value: '' },
+                  ...shops.map(s => ({ label: s.name, value: s.id }))
+                ]}
+                disabled={assignRole === 'admin'}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <Button type="submit" loading={isAssigning} className="w-full">
+                Assign
+              </Button>
+            </div>
           </div>
           {assignRole !== 'admin' && (
             <div className="text-sm text-warning mt-2 bg-warning/10 p-2 rounded-md">
