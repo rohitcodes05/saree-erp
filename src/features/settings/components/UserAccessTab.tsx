@@ -13,7 +13,7 @@ export const UserAccessTab: React.FC = () => {
   const [profiles, setProfiles] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [assignEmail, setAssignEmail] = useState('');
-  const [assignRole, setAssignRole] = useState('cashier');
+  const [assignRole, setAssignRole] = useState('staff');
   const [assignShop, setAssignShop] = useState('');
   const [isAssigning, setIsAssigning] = useState(false);
 
@@ -43,7 +43,7 @@ export const UserAccessTab: React.FC = () => {
   const handleAssignRole = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!assignEmail.trim()) return;
-    if (assignRole !== 'admin' && !assignShop) {
+    if (assignRole !== 'super_admin' && !assignShop) {
       toast.error('Please select a shop to assign the user to.');
       return;
     }
@@ -57,7 +57,7 @@ export const UserAccessTab: React.FC = () => {
         p_email: assignEmail.trim().toLowerCase(),
         p_role: assignRole,
         p_company_id: companyId,
-        p_shop_id: assignRole === 'admin' ? null : (assignShop || null)
+        p_shop_id: assignRole === 'super_admin' ? null : (assignShop || null)
       });
 
       if (error) {
@@ -175,11 +175,11 @@ export const UserAccessTab: React.FC = () => {
                 value={assignRole}
                 onChange={val => {
                   setAssignRole(val ?? 'staff');
-                  if (val === 'admin') setAssignShop('');
+                  if (val === 'super_admin') setAssignShop('');
                 }}
                 options={[
-                  { label: 'Admin (All Access)', value: 'admin' },
-                  { label: 'Manager (Shop Access)', value: 'manager' },
+                  { label: 'Admin (All Access)', value: 'super_admin' },
+                  { label: 'Manager (Shop Access)', value: 'shop_manager' },
                   { label: 'Staff (POS Only)', value: 'staff' },
                 ]}
               />
@@ -193,7 +193,7 @@ export const UserAccessTab: React.FC = () => {
                   { label: 'Select a shop...', value: '' },
                   ...shops.map(s => ({ label: s.name, value: s.id }))
                 ]}
-                disabled={assignRole === 'admin'}
+                disabled={assignRole === 'super_admin'}
               />
             </div>
             <div className="md:col-span-2">
@@ -202,7 +202,7 @@ export const UserAccessTab: React.FC = () => {
               </Button>
             </div>
           </div>
-          {assignRole !== 'admin' && (
+          {assignRole !== 'super_admin' && (
             <div className="text-sm text-warning mt-2 bg-warning/10 p-2 rounded-md">
               Note: Non-admin users must also be assigned to a specific shop to log in.
             </div>
